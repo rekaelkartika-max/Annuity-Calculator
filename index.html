@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Anuitas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .hasil {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Kalkulator Anuitas</h2>
+    <div class="form-group">
+        <label for="pinjaman">Jumlah Pinjaman / Modal (Rp)</label>
+        <input type="number" id="pinjaman" placeholder="Contoh: 10000000">
+    </div>
+    <div class="form-group">
+        <label for="bunga">Suku Bunga per Tahun (%)</label>
+        <input type="number" id="bunga" step="0.01" placeholder="Contoh: 12">
+    </div>
+    <div class="form-group">
+        <label for="tenor">Tenor / Jangka Waktu (Bulan)</label>
+        <input type="number" id="tenor" placeholder="Contoh: 12">
+    </div>
+    <button onclick="hitungAnuitas()">Hitung Cicilan</button>
+    <div class="hasil" id="hasil">
+        Cicilan per Bulan: Rp 0
+    </div>
+</div>
+
+<script>
+    function hitungAnuitas() {
+        const P = parseFloat(document.getElementById('pinjaman').value);
+        const bungaTahunan = parseFloat(document.getElementById('bunga').value);
+        const n = parseInt(document.getElementById('tenor').value);
+
+        if (isNaN(P) || isNaN(bungaTahunan) || isNaN(n) || P <= 0 || n <= 0) {
+            alert("Harap masukkan angka yang valid!");
+            return;
+        }
+
+        // Konversi bunga tahunan ke bunga bulanan (desimal)
+        const i = (bungaTahunan / 100) / 12;
+
+        // Rumus Anuitas: A = P * (i / (1 - (1 + i)^-n))
+        let anuitas = 0;
+        if (i === 0) {
+            anuitas = P / n;
+        } else {
+            anuitas = P * (i / (1 - Math.pow(1 + i, -n)));
+        }
+
+        // Format ke Rupiah
+        const formatRupiah = new Intl.NumberFormat('id-ID', {
+            style: 'currency',
+            currency: 'IDR',
+            minimumFractionDigits: 0
+        }).format(anuitas);
+
+        document.getElementById('hasil').innerText = "Cicilan per Bulan: " + formatRupiah;
+    }
+</script>
+
+</body>
+</html>
